@@ -1,0 +1,52 @@
+# Verify MYSQL connectivity using project specific user 'expense'
+# AL 2023 comes with  python 3.9 by default
+
+- name: Install pip3 to install crytography for Mysql
+  shell:
+    cmd: "dnf install python3-pip -y"
+
+- name: Install MySQL libraries
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    executable: pip3.9
+  loop:
+    - cryptography
+    - PyMySQL
+
+- name: Test MySQL connectivity with 'expense' user on 'transactions' database
+  community.mysql.mysql_query:
+    login_user: "{{ MYSQL_USER }}"
+    login_password: "{{ MYSQL_PASSWORD }}"
+    login_host: "{{ MYSQL_HOST }}"
+    login_db: "{{ MYSQL_DATABASE }}"
+    query: "SELECT 1"
+  register: mysql_query_result
+  ignore_errors: true
+
+- name: Debug MySQL query result
+  debug:
+    msg: "MySQL query result: {{ mysql_query_result }}"
+
+- name: Print error if MySQL query fails
+  debug:
+    msg: "Failed to connect to MySQL with user '{{ MYSQL_USER }}' on '{{ MYSQL_DATABASE }}' database."
+  when: mysql_query_result.failed is true
+
+- name: Print success if MySQL query succeeds
+  debug:
+    msg: "Successfully connected to MySQL with user '{{ MYSQL_USER }}' on '{{ MYSQL_DATABASE }}' database."
+  when: mysql_query_result.failed is false
+
+- name: Import mysql data
+  community.mysql.mysql_db:
+    name: all
+    state: import
+    login_user: "{{ MYSQL_USER }}"
+    login_password: "{{ MYSQL_PASSWORD }}"
+    login_host: "{{ MYSQL_HOST }}"
+    target: "{{ APP_LOCATION }}/schema/new_{{ COMPONENT }}.sql"
+  when: mysql_query_result.failed is false
+  notify: "reload and restart backend service"
+
+- name: reload and restart backend service
+  meta: flush_handlers

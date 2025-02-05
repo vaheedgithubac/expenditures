@@ -1,0 +1,11 @@
+---
+# tasks file for nginx
+
+- name: install nginx server
+  ansible.builtin.dnf:
+    name: nginx
+    state: installed
+  notify: "start and enable nginx"
+
+- name: Start nginx web server
+  meta: flush_handlers

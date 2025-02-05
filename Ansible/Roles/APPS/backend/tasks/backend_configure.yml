@@ -1,0 +1,40 @@
+# These tasks are common for Expense_Frontend and Expense_Backend Apps.
+# This role depends on common role, we no need to add common role explicitly, It will be automatically added and executed by ansible.
+# We need to define common role in meta/main.yml under dependencies attribute.
+
+- name: Create expense user
+  ansible.builtin.user:
+    name: expense
+
+# Including common role
+#- name: Include from common role
+#  tags:
+#   - deployment
+#  include_role:
+#    name: common
+#    tasks_from: main.yaml
+
+- name: Install dependencies
+  community.general.npm:
+    path: "{{ APP_LOCATION }}"
+
+- name: Copy backend service using template
+  ansible.builtin.template:
+    src: backend.service.j2
+    dest: "/etc/systemd/system/{{ COMPONENT }}.service"
+  notify: "reload and restart backend service"
+
+- name: Copy database schema file to mysql host
+  ansible.builtin.copy:
+    src: "{{ COMPONENT }}.sql"
+    dest: "{{ APP_LOCATION }}/schema/new_{{ COMPONENT }}.sql"
+
+# - name: Assign permissions to expense user
+#  ansible.builtin.file:
+#    path: /app
+#    owner: expense
+#    group: expense
+#    mode: "0744"
+#    recurse: true
+
+

@@ -1,0 +1,10 @@
+---
+# handlers file for backend
+
+- name: "reload and restart backend service"
+  ansible.builtin.systemd_service:
+    name: backend
+    enabled: true
+    state: restarted
+    daemon_reload: true
+    

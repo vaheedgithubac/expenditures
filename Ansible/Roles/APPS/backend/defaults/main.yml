@@ -1,0 +1,13 @@
+---
+# defaults file for backend
+
+# App Variables
+APP_USER: expense
+APP_LOCATION: /app
+COMPONENT: backend
+
+# Mysql Variables
+MYSQL_USER: expense
+MYSQL_PASSWORD: ExpenseApp@1
+MYSQL_HOST: localhost         # mysql.daws82s.online
+MYSQL_DATABASE: transactions

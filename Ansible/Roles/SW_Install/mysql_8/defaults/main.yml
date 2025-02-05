@@ -1,0 +1,10 @@
+---
+# defaults file for mysql
+
+mysql_root_password: "ExpenseApp@1"
+
+SAMPLE_USER: "sample"
+
+SAMPLE_DATABASE: "sample"
+
+SAMPLE_USER_PASSWORD: "Sample@1"

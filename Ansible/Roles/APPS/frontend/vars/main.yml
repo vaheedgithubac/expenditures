@@ -1,0 +1,11 @@
+---
+# vars file for frontend
+
+
+# BACKEND_HOST: localhost    # "backend.daws82s.online"
+
+# PROJECT_NAME: expense
+
+# APP_LOCATION: /usr/share/nginx/html
+
+# COMPONENT: frontend

@@ -1,0 +1,13 @@
+---
+# tasks file for frontend
+
+# These tasks will install Expense Frontend App
+
+ - name: copy expense config
+   ansible.builtin.template:
+     src: expense.conf.j2
+     dest: "/etc/nginx/default.d/{{ PROJECT_NAME }}.conf"
+   notify: "Restart Nginx"
+
+ - name: Restart Nginx
+   meta: flush_handlers

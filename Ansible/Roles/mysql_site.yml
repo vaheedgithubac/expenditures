@@ -1,0 +1,5 @@
+- name: This play will install MYSQL-8 on Amazon Linux 2023
+  hosts: "mysql"
+
+  roles:
+    - mysql

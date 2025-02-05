@@ -1,0 +1,10 @@
+---
+# vars file for mysql
+
+# mysql_root_password: "ExpenseApp@1"
+
+# SAMPLE_USER_PASSWORD: "Sample@1"
+
+#PROJECT_DEFAULT_USER: "expense"
+
+#PROJECT_DEFAULT_DATABASE: "transactions"

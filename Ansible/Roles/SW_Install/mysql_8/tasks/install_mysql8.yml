@@ -1,0 +1,52 @@
+# These tasks will install MYSQL-8 on Amazon Linux 2023
+
+  - name: Update Packages
+    dnf:
+      name: '*'
+      state: latest
+      update_cache: yes
+
+  - name: Download the MySQL community release RPM
+    vars:
+      url: "https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm"
+      dest: "/tmp/mysql80-community-release-el9-1.noarch.rpm"
+    ansible.builtin.command:
+      cmd: "curl -fsSL -o {{ dest }} {{ url }}"
+    args:
+      creates: "/tmp/mysql80-community-release-el9-1.noarch.rpm"
+
+  - name: Import MySQL GPG key
+    ansible.builtin.command:
+      cmd: "rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2023"
+
+  - name: Install MySQL 80 community release RPM
+    shell: "dnf install /tmp/mysql80-community-release-el9-1.noarch.rpm -y"
+    #enablerepo: mysql80-community
+
+  - name: Update Packages
+    dnf:
+      name: '*'
+      state: latest
+      update_cache: yes
+
+  - name: Install mysql-community-client package
+    ansible.builtin.dnf:
+      name: mysql-community-client
+      state: present
+
+  - name: Install mysql-community-server package
+    ansible.builtin.dnf:
+      name: mysql-community-server
+      state: present
+    notify: "start and enable mysqld service"
+
+  - name: Start and enable mysqld service
+    meta: flush_handlers
+
+  - name: Run command to get the temporary password
+    ansible.builtin.shell: "grep -i 'temporary password' /var/log/mysqld.log | awk '{print $NF}'"
+    register: temp_password
+
+  - name: Show the extracted temporary password
+    ansible.builtin.debug:
+      msg: "The temporary password is {{ temp_password.stdout }}"

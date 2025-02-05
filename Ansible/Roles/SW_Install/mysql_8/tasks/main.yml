@@ -1,0 +1,10 @@
+---
+# tasks file for mysql
+
+- import_tasks: install_mysql8.yml
+- import_tasks: change_root_temp_pwd.yml
+- import_tasks: create_project_specific_user_database.yml
+
+
+# we can use include_tasks also
+# include_tasks:

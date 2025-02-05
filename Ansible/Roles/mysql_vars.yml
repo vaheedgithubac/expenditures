@@ -5,3 +5,6 @@ PROJECT_DEFAULT_USER: expense
 PROJECT_DEFAULT_DATABASE: transactions
 
 PROJECT_DEFAULT_USER_PASSWORD: ExpenseApp@1
+
+
+# ansible-playbook playbook.yml --extra-vars "@vars_file.yml"

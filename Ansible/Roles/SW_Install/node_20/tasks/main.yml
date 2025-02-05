@@ -1,0 +1,47 @@
+---
+# tasks file for node-20
+# These tasks will install Nodejs-20 on Amazon Linux 2023
+
+    - name: Update all packages
+      dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
+
+    - name: Download Node.js setup script
+      get_url:
+        url: https://rpm.nodesource.com/setup_20.x
+        dest: /tmp/setup_20.x
+        mode: '0755'
+
+    - name: Execute Node.js setup script
+      shell: /tmp/setup_20.x
+      args:
+        creates: /etc/yum.repos.d/nodesource.repo  # This ensures the script is not run again if the repo is already added
+
+    - name: Update all packages
+      dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
+
+    - name: Install Node.js package
+      dnf:
+        name: nodejs
+        state: present
+
+    - name: Get Node.js version
+      command: node --version
+      register: node_version
+
+    - name: Display Node.js version
+      debug:
+        msg: "Node.js version is {{ node_version.stdout }}"
+
+    - name: Get npm version
+      command: npm --version
+      register: npm_version
+
+    - name: Display npm version
+      debug:
+        msg: "npm version is {{ npm_version.stdout }}"

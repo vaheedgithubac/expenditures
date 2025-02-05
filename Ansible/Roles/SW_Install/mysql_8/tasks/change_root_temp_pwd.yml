@@ -1,0 +1,88 @@
+# These tasks will change MYSQL temporary root password with the user supplied password
+
+  - name: Install pip3 to install cryptography for Mysql
+    shell:
+      cmd: "dnf install python3-pip -y"
+
+  - name: Install MySQL libraries
+    ansible.builtin.pip:
+      name: "{{ item }}"
+      executable: pip3.9
+    loop:
+    - cryptography
+    - PyMySQL
+
+  - name: connect to mysql server
+    community.mysql.mysql_info:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: localhost  #mysql.daws82s.online
+    register: mysql_info
+    ignore_errors: true
+
+  - name: print the output
+    ansible.builtin.debug:
+      msg: "MySQL info: {{ mysql_info }}"
+
+  - name: Copy change_root_password.sh and flush_privileges.sql files to remote host
+    ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: "/home/ec2-user/"
+      owner: ec2-user
+      group: ec2-user
+      mode: "0744"
+    loop:
+      - change_root_password.sh
+      - flush_privileges.sql
+
+  # Give executable permission to the script
+  - name: Ensure the shell script is executable
+    file:
+      path: "/home/ec2-user/change_root_password.sh"
+      mode: '0755'  # rwxr-xr-x, or use whatever permission you need
+
+  - name: update expired root user password
+    command: "/home/ec2-user/change_root_password.sh '{{ temp_password.stdout }}' '{{ mysql_root_password }}'"
+    when: mysql_info.failed is true
+    register: update_temp_pwd_info
+
+  - name: print update_temp_pwd info
+    ansible.builtin.debug:
+      msg: "update_temp_pwd info:  {{ update_temp_pwd_info }}"
+
+  - name: Disable remote root login
+    mysql_user:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: localhost
+      name: root
+      host: "{{ item }}"
+      state: absent
+    loop:
+        - '%'  # Only remove access from any remote host, leave localhost intact
+
+  - name: Remove anonymous MySQL users
+    mysql_user:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      name: ''
+      host: '%'
+      state: absent
+
+  # Remove the test database
+  - name: Remove the test database
+    mysql_db:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      name: test
+      state: absent
+
+  # Reload MySQL privilege tables
+  - name: Flush MySQL privileges
+    mysql_db:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      name: mysql
+      state: import
+      target: "/home/ec2-user/flush_privileges.sql"
+    notify: "restart and enable mysqld service"

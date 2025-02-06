@@ -1,0 +1,6 @@
+- name: This play will install node-20 on Amazon Linux 2023
+  hosts: "nginx"
+
+  roles:
+    - nginx
+    - backend

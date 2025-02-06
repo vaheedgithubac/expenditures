@@ -2,6 +2,7 @@
 # tasks file for backend
 
 - import_tasks: backend_configure.yml
+- import_tasks: install_mysql_8_client.yml
 - import_tasks: mysql_connectivity_with_user_expense.yml
 
 

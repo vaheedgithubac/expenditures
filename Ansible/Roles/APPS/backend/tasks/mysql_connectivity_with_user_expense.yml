@@ -1,7 +1,7 @@
 # Verify MYSQL connectivity using project specific user 'expense'
 # AL 2023 comes with  python 3.9 by default
 
-- name: Install pip3 to install crytography for Mysql
+- name: Install pip3 to install cryptography for Mysql
   shell:
     cmd: "dnf install python3-pip -y"
 
@@ -13,7 +13,7 @@
     - cryptography
     - PyMySQL
 
-- name: Test MySQL connectivity with 'expense' user on 'transactions' database
+- name: Test MySQL connectivity with '{{ MYSQL_USER }}' user on '{{ MYSQL_DATABASE }}' database  
   community.mysql.mysql_query:
     login_user: "{{ MYSQL_USER }}"
     login_password: "{{ MYSQL_PASSWORD }}"

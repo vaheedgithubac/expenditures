@@ -1,0 +1,34 @@
+# These tasks will install MYSQL-8 client on Amazon Linux 2023
+  - name: Update Packages
+    dnf:
+      name: '*'
+      state: latest
+      update_cache: yes
+
+  - name: Download the MySQL community release RPM
+    vars:
+      url: "https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm"
+      dest: "/tmp/mysql80-community-release-el9-1.noarch.rpm"
+    ansible.builtin.command:
+      cmd: "curl -fsSL -o {{ dest }} {{ url }}"
+    args:
+      creates: "/tmp/mysql80-community-release-el9-1.noarch.rpm"
+
+  - name: Import MySQL GPG key
+    ansible.builtin.command:
+      cmd: "rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2023"
+
+  - name: Install MySQL 80 community release RPM
+    shell: "dnf install /tmp/mysql80-community-release-el9-1.noarch.rpm -y"
+    #enablerepo: mysql80-community
+
+  - name: Update Packages
+    dnf:
+      name: '*'
+      state: latest
+      update_cache: yes
+
+  - name: Install mysql-community-client package
+    ansible.builtin.dnf:
+      name: mysql-community-client
+      state: present

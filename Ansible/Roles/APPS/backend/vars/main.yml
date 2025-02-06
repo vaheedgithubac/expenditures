@@ -10,6 +10,6 @@
 # Mysql Variables
 
 # MYSQL_USER: expense
-# #MYSQL_PASSWORD: ExpenseApp@1
+# MYSQL_PASSWORD: ExpenseApp@1
 # MYSQL_HOST: mysql.daws82s.online
 #MYSQL_DATABASE: transactions

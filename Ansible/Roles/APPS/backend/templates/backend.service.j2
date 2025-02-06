@@ -3,7 +3,7 @@ Description = Backend Service
 
 [Service]
 User={{ APP_USER }}
-Environment=DB_HOST= "{{ MYSQL_HOST }}"
+Environment=DB_HOST="{{ MYSQL_HOST }}"
 # "mysql.daws82s.online"
 ExecStart=/usr/bin/node {{ APP_LOCATION }}/index.js
 SyslogIdentifier={{ COMPONENT }}

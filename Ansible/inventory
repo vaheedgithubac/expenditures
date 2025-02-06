@@ -1,5 +1,8 @@
 [mysql]
-127.0.0.1
+mysql.expense.internal
 
 [node]
-127.0.0.1
+backend.expense.internal
+
+[nginx]
+frontend.expense.internal

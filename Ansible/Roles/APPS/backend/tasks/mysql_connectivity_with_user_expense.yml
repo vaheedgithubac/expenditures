@@ -3,7 +3,7 @@
 
 - name: Install pip3 to install cryptography for Mysql
   shell:
-    cmd: "dnf install python3-pip -y"
+    cmd: "sudo dnf install python3-pip -y"
 
 - name: Install MySQL libraries
   ansible.builtin.pip:

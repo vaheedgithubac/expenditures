@@ -24,10 +24,10 @@
     dest: "/etc/systemd/system/{{ COMPONENT }}.service"
   notify: "reload and restart backend service"
 
-#- name: Copy database schema file to mysql host
-#  ansible.builtin.copy:
-#    src: "{{ COMPONENT }}.sql"
-#    dest: "{{ APP_LOCATION }}/schema/new_{{ COMPONENT }}.sql"
+- name: Copy database schema file to mysql host
+  ansible.builtin.copy:
+    src: "{{ COMPONENT }}.sql"
+    dest: "{{ APP_LOCATION }}/schema/new_{{ COMPONENT }}.sql"
 
 # - name: Assign permissions to expense user
 #  ansible.builtin.file:

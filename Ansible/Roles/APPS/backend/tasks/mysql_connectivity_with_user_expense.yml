@@ -44,7 +44,7 @@
     login_user: "{{ MYSQL_USER }}"
     login_password: "{{ MYSQL_PASSWORD }}"
     login_host: "{{ MYSQL_HOST }}"
-    target: "{{ APP_LOCATION }}/schema/{{ COMPONENT }}.sql"
+    target: "{{ APP_LOCATION }}/schema/new_{{ COMPONENT }}.sql"
   when: mysql_query_result.failed is false
   notify: "reload and restart backend service"
 

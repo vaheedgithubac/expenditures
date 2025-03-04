@@ -52,8 +52,8 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - scripts/backend.sql: /docker-entrypoint-initdb.d
-      - mydb: /var/lib/mysql
+      - scripts/backend.sql:/docker-entrypoint-initdb.d/backend.sql
+      - mydb:/var/lib/mysql
     networks:
       - backend        
     healthcheck:

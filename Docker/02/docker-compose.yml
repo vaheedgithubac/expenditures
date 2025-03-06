@@ -42,7 +42,7 @@ services:
       - backend
     healthcheck:
      #test: ["CMD", "netstat", "-tulnp", "|", "grep", ":5000"]
-      test: ["CMD-SHELL", "sh", "python_app_health_check.sh"]
+      test: ["CMD-SHELL", "sh", "app_health_check.sh"]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -77,7 +77,6 @@ networks:
   backend:
 
 ###############################   Named Volumes ######################################################
-
  # volumes:
  # mydb:
  #   name: ums-mysqldb-data-v1  # Explicitly name the volume
@@ -86,5 +85,4 @@ networks:
  #     project: "ums-stack"           # Label to indicate the project name
  #     component: "mysql-database"    # Label to specify that this volume is for the MySQL database
  #     purpose: "persistent-storage"  # Label to indicate the purpose of this volume
-
 #################################   Named Volumes #####################################################

@@ -79,12 +79,12 @@ services:
 
 volumes:
   mydb:
-    name: sbms-mysqldb-data-v1  # Explicitly name the volume
-    driver: local  # Optional, as local is the default driver
+    name: login-mysqldb-data-v1    # Explicitly name the volume
+    driver: local                  # Optional, as local is the default driver
     labels:
-      project: "sbms-stack"           # Label to indicate the project name
-      component: "mysql-database"    # Label to specify that this volume is for the MySQL database
-      purpose: "persistent-storage"  # Label to indicate the purpose of this volume
+      project: "login-web-app-stack"        # Label to indicate the project name
+      component: "mysql-database"           # Label to specify that this volume is for the MySQL database
+      purpose: "persistent-storage"         # Label to indicate the purpose of this volume
 
 networks:
   frontend:

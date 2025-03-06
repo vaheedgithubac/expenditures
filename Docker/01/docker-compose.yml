@@ -61,7 +61,7 @@ services:
     #   - "3306:3306"
     volumes:
       - mydb:/var/lib/mysql
-      - ./mysql/backend.sql:/docker-entrypoint-initdb.d/backend.sql
+      - ./mysql/scripts/backend.sql:/docker-entrypoint-initdb.d/backend.sql
     networks:
       - backend   
     healthcheck:

@@ -17,14 +17,17 @@ goto src/main/resources/application.yml (Clearly observe the properties)
        docker build -t spring-img .
 
 - Create docker network called 'spring' as follows
+  
        docker network create spring
 
-- Create a Mysql docker container as follows 
+- Create a Mysql docker container as follows
+  
        docker run -d --name mysql --network spring -p 3306:3306  -e MYSQL_ROOT_USER=root -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=sbms mysql:5.7
                                       (or)
        docker run -d --name mysql --network spring -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=sbms -e MYSQL_PASSWORD=sbms -e MYSQL_DATABASE=sbms mysql:5.7                                     
 
-- Create a Spring Boot  docker container as follows 
+- Create a Spring Boot  docker container as follows
+  
        docker run -d --name spring --network spring -p 8080:8080 -e DB_HOST=mysql spring-img
                                          (or)
        docker run -d --name spring --network spring -p 8080:8080 -e DB_HOST=mysql -e DB_USERNAME=sbms -e DB_PASSWORD=sbms -e DB_NAME=sbms spring-img

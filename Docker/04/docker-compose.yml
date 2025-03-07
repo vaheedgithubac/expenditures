@@ -32,15 +32,9 @@ services:
     ports:
       - "8080"
     depends_on:
-      db-mysql:
+      mysql:
         condition: service_healthy
         restart: true   
-    environment:
-      - DB_HOST=db-mysql
-      - DB_USERNAME=login
-      - DB_PASSWORD=login
-      - DB_PORT=3306
-      - DB_NAME=login
     networks:
       - frontend
       - backend
@@ -52,7 +46,7 @@ services:
       retries: 3
       start_period: 10s
   
-  db-mysql:
+  mysql:
     container_name: mysqldb-login
     image: mysql:5.7.28
     restart: always
@@ -60,7 +54,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: login
       MYSQL_PASSWORD: login
-      MYSQL_DATABASE: login
+      MYSQL_DATABASE: devopsclass
     # ports:
     #   - "3306:3306"
     volumes:

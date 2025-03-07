@@ -26,13 +26,9 @@
     Connection con = DriverManager.getConnection(connection_url, "db_username", "db_password");
 
 
-
-
    // Class.forName("com.mysql.jdbc.Driver");
    // Connection con = DriverManager.getConnection("jdbc:mysql://3.108.236.194:3306/devopsclass?useSSL=false", "ranjit", "Sunday@2019");
  
-
-
 
     Statement st = con.createStatement();
     int i = st.executeUpdate("insert into USER(first_name, last_name, email, username, password, regdate) values ('" + firstName + "','" + lastName + "','" + email + "','" + userName + "','" + password + "', CURDATE())");

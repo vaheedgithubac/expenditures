@@ -24,7 +24,6 @@
     Connection con = DriverManager.getConnection(connection_url, "db_username", "db_password");
 
     
-
     Statement st = con.createStatement();
     ResultSet rs;
     rs = st.executeQuery("select * from USER where username='" + userName + "' and password='" +password + "'");

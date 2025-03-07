@@ -7,8 +7,8 @@
     // Connection con = DriverManager.getConnection("jdbc:mysql://3.108.236.194:3306/devopsclass?useSSL=false", "ranjit", "Sunday@2019");
     
 
-    //String dbDriver      = System.getenv("dbDriver"); 
-    //String connectionUrl = System.getenv("dbConnectionUrl"); 
+    // String dbDriver      = System.getenv("dbDriver"); 
+    // String connectionUrl = System.getenv("dbConnectionUrl"); 
 
     // String db_host        = System.getenv("DB_HOST");           
     // String db_username    = System.getenv("DB_USERNAME");      

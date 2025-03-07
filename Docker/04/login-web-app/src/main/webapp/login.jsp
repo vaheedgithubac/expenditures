@@ -10,11 +10,11 @@
     //String dbDriver      = System.getenv("dbDriver"); 
     //String connectionUrl = System.getenv("dbConnectionUrl"); 
 
-    String db_host        = System.getenv("DB_HOST");           # DB_HOST
-    String db_username    = System.getenv("DB_USERNAME");       # DB_USERNAME
-    String db_password    = System.getenv("DB_PASSWORD");       # DB_PASSWORD
-    String db_port        = System.getenv("DB_PORT");           # DB_PORT 
-    String db_name        = System.getenv("DB_NAME");           # DB_NAME
+    String db_host        = System.getenv("DB_HOST");           
+    String db_username    = System.getenv("DB_USERNAME");      
+    String db_password    = System.getenv("DB_PASSWORD");       
+    String db_port        = System.getenv("DB_PORT");            
+    String db_name        = System.getenv("DB_NAME");          
 
     String connection_url  = "jdbc:mysql://" + System.getenv("DB_HOST") + ":" + System.getenv("DB_PORT") + "/" + System.getenv("DB_NAME") + "?useSSL=false";
 

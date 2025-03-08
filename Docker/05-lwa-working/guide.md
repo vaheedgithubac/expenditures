@@ -14,3 +14,4 @@
       Connection con = DriverManager.getConnection("jdbc:mysql://mysql:3306/devopsclass?useSSL=false", "login", "login");
     
       DB host - mysql, DB port - 3006, DB name - devopsclass, DB user - login, DB password - login
+''' Very Important Note:  You need to remove/delete volumes associated to mysql containers if any to initialize the init-db script '''

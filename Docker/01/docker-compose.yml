@@ -49,7 +49,7 @@ services:
       start_period: 20s
   
   db-mysql:
-    container_name: mysqldb-sbms
+    container_name: mysqldb-expense
     image: mysql:8.0
     restart: always
     environment:

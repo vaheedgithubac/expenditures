@@ -10,7 +10,7 @@ ENV DB_HOST     \
     
 
 # copy .war file to tomcat webapps/
-COPY ./target/LoginWebApp.war /usr/local/tomcat/webapps/
+COPY ./target/LoginWebApp.war /usr/local/tomcat/webapps/ROOT.war
 
 WORKDIR /usr/local/tomcat/webapps/
 

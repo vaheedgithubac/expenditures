@@ -2,7 +2,7 @@
 
       - Java:8
       - Tomcat:8.5
-      - mysql:5.7.28
+      - Mysql:5.7.28
 
 * First you need to create a .war file using following command
   

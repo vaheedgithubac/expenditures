@@ -11,7 +11,7 @@ services:
           condition: service_healthy
           restart: true   
     volumes:
-      - ./login.conf:/etc/nginx/conf.d/login.conf
+      - ./login.conf:/etc/nginx/conf.d/login.conf:ro
     # - ./nginx.conf:/etc/nginx/nginx.conf  # Custom NGINX configuration
     networks:
       - frontend  

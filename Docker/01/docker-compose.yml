@@ -12,7 +12,7 @@ services:
           restart: true   
     volumes:
       - ./frontend/code:/usr/share/nginx/html
-      - ./nginx.conf:/etc/nginx/nginx.conf  # Custom NGINX configuration
+      - ./expense.conf:/etc/nginx/conf.d/expense.conf  # Custom NGINX configuration
     networks:
       - frontend  
     healthcheck:

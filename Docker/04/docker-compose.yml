@@ -2,7 +2,7 @@ name: login-web-app-stack
 services:
 
   web-nginx:
-    image: nginx:latest 
+    image: nginx:1.27.4 
     container_name: login-nginx
     ports:
       - "80:80"  # NGINX listens on port 8080 of the host

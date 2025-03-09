@@ -12,7 +12,7 @@ services:
           restart: true   
     volumes:
       - ./login.conf:/etc/nginx/conf.d/login.conf:ro
-    # - ./nginx.conf:/etc/nginx/nginx.conf  # Custom NGINX configuration
+    # - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Custom NGINX configuration
     networks:
       - frontend  
     healthcheck:

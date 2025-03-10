@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `product` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE USER IF NOT EXISTS 'product'@'%' IDENTIFIED WITH mysql_native_password BY 'product';
+CREATE USER IF NOT EXISTS 'product'@'%' IDENTIFIED BY 'product';
 GRANT ALL PRIVILEGES ON product.* TO 'product'@'%';
-ALTER USER 'product'@'%' IDENTIFIED WITH mysql_native_password BY 'product';
+ALTER USER 'product'@'%' IDENTIFIED BY 'product';
 FLUSH PRIVILEGES;

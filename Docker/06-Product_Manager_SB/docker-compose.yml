@@ -11,7 +11,7 @@ services:
           condition: service_healthy
           restart: true   
     volumes:
-      - ./sbms.conf:/etc/nginx/conf.d/sbms.conf:ro
+      - ./product.conf:/etc/nginx/conf.d/product.conf:ro
     # - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Custom NGINX configuration
     networks:
       - frontend  

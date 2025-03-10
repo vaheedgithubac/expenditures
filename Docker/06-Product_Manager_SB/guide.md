@@ -2,6 +2,8 @@
 
       - Java:8
       - Mysql:8.0
+
+      - Machine:t2.small
   
 * Application Port - 8080
 

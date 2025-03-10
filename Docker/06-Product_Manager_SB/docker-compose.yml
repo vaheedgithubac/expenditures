@@ -7,7 +7,7 @@ services:
     ports:
       - "80:80"  # NGINX listens on port 8080 of the host
     depends_on:
-      app-sbms:
+      app-product:
           condition: service_healthy
           restart: true   
     volumes:
@@ -23,13 +23,13 @@ services:
       retries: 3
       start_period: 10s
 
-  app-sbms:
-    image: sbms-img
-    container_name: app-sbms-cont
+  app-product:
+    image: product-img
+    container_name: app-product-cont
     #command: sh -c "sleep 5 && apt-get update && apt-get install curl -y && sleep 5000"
     build: 
-      context: ./spring-boot-mysql
-      dockerfile: Dockerfile
+      context: ./product-manager
+      dockerfile: Dockerfile-product
     ports:
       - "8080"
     depends_on:
@@ -38,9 +38,9 @@ services:
         restart: true   
     environment:
       - DB_HOST=db-mysql
-      - DB_USERNAME=sbms
-      - DB_PASSWORD=sbms
-      - DB_NAME=sbms
+      - DB_USERNAME=product
+      - DB_PASSWORD=product
+      - DB_NAME=product
     networks:
       - frontend
       - backend
@@ -58,13 +58,14 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: sbms
-      MYSQL_PASSWORD: sbms
-      MYSQL_DATABASE: sbms
+      MYSQL_USER: product
+      MYSQL_PASSWORD: product
+      MYSQL_DATABASE: product
     # ports:
     #   - "3306:3306"
     volumes:
       - mydb:/var/lib/mysql
+      - ./scripts/product.sql:/docker-entrypoint-initdb.d/product.sql
     networks:
       - backend   
     healthcheck:

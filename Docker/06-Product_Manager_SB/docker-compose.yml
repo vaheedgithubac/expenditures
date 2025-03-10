@@ -53,7 +53,7 @@ services:
       start_period: 10s
   
   db-mysql:
-    container_name: mysqldb-sbms
+    container_name: mysqldb-product
     image: mysql:8.0
     restart: always
     environment:

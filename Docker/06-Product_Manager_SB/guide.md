@@ -2,8 +2,10 @@
 
       - Java:8
       - Mysql:8.0
+  
+* Application Port - 8080
 
-* First you need to create a .WAR file using following command
+* First you need to create a .JAR file using following command
   
       cd product-manager/
       docker run --rm --name maven-cont -v $(pwd):/java-proj  -w /java-proj maven:3.8.1-openjdk-8 mvn clean install package -DskipTests=true

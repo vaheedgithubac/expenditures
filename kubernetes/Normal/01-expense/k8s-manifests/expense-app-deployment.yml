@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app-deployment
+  labels:
+    app: python-app
+    tier: front-end
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-app
+      tier: front-end
+  template:
+    metadata:
+      labels:
+        app: python-app
+        tier: front-end
+    spec:
+      initContainers:
+        - name: check-mysql-db-ready
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z mysql-svc 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL DB Server has started";']
+
+        - name: init-db
+          image: mysql:5.7.28
+          command: ['/bin/bash', '-c', 'mysql -h $MYSQL_HOST -u$MYSQL_ROOT_PASSWORD -p$MYSQL_ROOT_PASSWORD < /mnt/init.sql']
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: MYSQL_ROOT_PASSWORD
+          envFrom:
+          - configMapRef:
+              name: python-app-env-vars
+
+          volumeMounts:
+          - name: mysql-init-db
+            mountPath: /mnt
+      
+      volumes:
+      - name: mysql-init-db
+        configMap:
+          name: mysql-initdb-config
+              
+      containers:
+      - name: frontend-cont
+        image: vaheeddockerhub/new-python-img-devops-techstack
+        ports:
+        - name: python-app-port
+          containerPort: 5000
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: python-app-env-vars
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-end-service
+  labels:
+    app: python-app
+    tier: front-end
+spec:
+  type: NodePort
+  selector:
+    app: python-app
+    tier: front-end
+  ports:
+  - name: frontend-port
+    protocol: "TCP"
+    port: 5000
+    targetPort: 5000
+    nodePort: 32123

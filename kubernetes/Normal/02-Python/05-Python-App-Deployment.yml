@@ -46,7 +46,7 @@ spec:
               
       containers:
       - name: frontend-cont
-        image: vaheeddockerhub/new-python-img-devops-techstack
+        image: <<img-vaheeddockerhub/new-python-img-devops-techstack-img>>
         ports:
         - name: python-app-port
           containerPort: 5000

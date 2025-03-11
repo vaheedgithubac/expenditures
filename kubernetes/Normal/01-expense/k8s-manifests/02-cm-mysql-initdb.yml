@@ -3,6 +3,10 @@ kind: ConfigMap
 metadata:
   name: mysql-initdb-config
 data:
+  mysql_health_check.sh: |
+    #!/bin/env bash
+    mysql -h localhost -u root -p${MYSQL_ROOT_PASSWORD} -e "SELECT 1"
+    
   init.sql: |
     CREATE DATABASE IF NOT EXISTS transactions;
     USE transactions;
@@ -16,6 +20,8 @@ data:
     CREATE USER IF NOT EXISTS 'expense'@'%' IDENTIFIED BY 'ExpenseApp@1';
     GRANT ALL PRIVILEGES ON transactions.* TO 'expense'@'%';
     FLUSH PRIVILEGES;
+
+    
     
    
 

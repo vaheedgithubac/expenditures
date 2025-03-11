@@ -1,30 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: python-app-deployment
+  name: expense-backend-deployment
   labels:
-    app: python-app
-    tier: front-end
+    app: expense-backend
+    tier: backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: python-app
-      tier: front-end
+      app: expense-backend
+      tier: backend
   template:
     metadata:
       labels:
-        app: python-app
-        tier: front-end
+        app: expense-backend
+        tier: backend
     spec:
       initContainers:
         - name: check-mysql-db-ready
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z mysql-svc 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL DB Server has started";']
-
-        - name: init-db
-          image: mysql:5.7.28
-          command: ['/bin/bash', '-c', 'mysql -h $MYSQL_HOST -u$MYSQL_ROOT_PASSWORD -p$MYSQL_ROOT_PASSWORD < /mnt/init.sql']
+          command: 
+            - "sh"
+            - "-c"     
+            - |
+              echo "Checking for the availability of MySQL Server deployment";
+              while ! nc -w 1 -z localhost 3306; do sleep 1; printf "-"; done;
+              echo "  >> MySQL DB Server has started"
+        
+        - name: connectivity-init-db
+          image: mysql:8.0
+          #command: ['/bin/bash', '-c', '/mnt/mysql_health_check.sh && mysql -h $MYSQL_HOST -u$MYSQL_ROOT_PASSWORD -p$MYSQL_ROOT_PASSWORD < /mnt/init.sql']
+          command:
+            - "bash"
+            - "-c"
+            - |
+              chmod +x /mnt/mysql_health_check.sh;
+              /mnt/mysql_health_check.sh
+              #mysql -h ${MYSQL_HOST} -u root -p${MYSQL_ROOT_PASSWORD} < /mnt/init.sql;
           env:
           - name: MYSQL_ROOT_PASSWORD
             valueFrom:
@@ -33,7 +46,7 @@ spec:
                 key: MYSQL_ROOT_PASSWORD
           envFrom:
           - configMapRef:
-              name: python-app-env-vars
+              name: expense-backend-env-vars
 
           volumeMounts:
           - name: mysql-init-db

@@ -6,6 +6,7 @@ data:
   mysql_health_check.sh: |
     #!/bin/env bash
     mysql -h localhost -u root -p${MYSQL_ROOT_PASSWORD} -e "SELECT 1"
+    mysql-h localhost -u root -p${MYSQL_ROOT_PASSWORD} < /mnt/init.sql;
     
   init.sql: |
     CREATE DATABASE IF NOT EXISTS transactions;

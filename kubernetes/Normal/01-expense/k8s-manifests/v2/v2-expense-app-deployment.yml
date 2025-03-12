@@ -27,7 +27,7 @@ spec:
       - name: connectivity-init-db
         image: mysql:8.0
         command: ["sh", "-c", "chmod +x /mnt/mysql_health_check.sh && /mnt/mysql_health_check.sh"]
-        #command: ['/bin/bash', '-c', '/mnt/mysql_health_check.sh && mysql -h $MYSQL_HOST -u$MYSQL_ROOT_PASSWORD -p$MYSQL_ROOT_PASSWORD < /mnt/init.sql']
+        # command: ['/bin/bash', '-c', '/mnt/mysql_health_check.sh && mysql -h $MYSQL_HOST -u$MYSQL_ROOT_PASSWORD -p$MYSQL_ROOT_PASSWORD < /mnt/init.sql']
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:

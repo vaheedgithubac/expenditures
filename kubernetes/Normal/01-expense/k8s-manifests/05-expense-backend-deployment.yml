@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: expense-backend-deployment
+  name: expense-backend
   labels:
     app: expense-backend
     tier: backend
@@ -17,52 +17,37 @@ spec:
         app: expense-backend
         tier: backend
     spec:
-      initContainers:
-        - name: check-mysql-db-ready
-          image: busybox:1.31
-          command: 
-            - "sh"
-            - "-c"     
-            - |
-              echo "Checking for the availability of MySQL Server deployment";
-              while ! nc -w 1 -z localhost 3306; do sleep 1; printf "-"; done;
-              echo "  >> MySQL DB Server has started"
-        
-        - name: connectivity-init-db
-          image: mysql:8.0
-          #command: ['/bin/bash', '-c', '/mnt/mysql_health_check.sh && mysql -h $MYSQL_HOST -u$MYSQL_ROOT_PASSWORD -p$MYSQL_ROOT_PASSWORD < /mnt/init.sql']
-          command:
-            - "bash"
-            - "-c"
-            - |
-              chmod +x /mnt/mysql_health_check.sh;
-              /mnt/mysql_health_check.sh
-              #mysql -h ${MYSQL_HOST} -u root -p${MYSQL_ROOT_PASSWORD} < /mnt/init.sql;
-          env:
-          - name: MYSQL_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: mysql-secret
-                key: MYSQL_ROOT_PASSWORD
-          envFrom:
-          - configMapRef:
-              name: expense-backend-env-vars
 
-          volumeMounts:
-          - name: mysql-init-db
-            mountPath: /mnt
-      
       volumes:
       - name: mysql-init-db
         configMap:
           name: mysql-initdb-config
-              
+
+      initContainers:
+      - name: connectivity-init-db
+        image: mysql:8.0
+        #command: ['/bin/bash', '-c', '/mnt/mysql_health_check.sh && mysql -h $MYSQL_HOST -u$MYSQL_ROOT_PASSWORD -p$MYSQL_ROOT_PASSWORD < /mnt/init.sql']
+        command: ["/bin/sh", "-c", "chmod +x /mnt/mysql_health_check.sh && /mnt/mysql_health_check.sh"]
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: expense-backend-env-vars
+
+        volumeMounts:
+        - name: mysql-init-db
+          mountPath: /mnt
+      
       containers:
-      - name: frontend-cont
-        image: vaheeddockerhub/new-python-img-devops-techstack
+      - name: expense-backend-cont
+        image: << vaheeddockerhub/new-python-img-devops-techstack>>
         ports:
-        - name: python-app-port
-          containerPort: 5000
+        - name: expense-backend
+          containerPort: 8080
         env:
         - name: MYSQL_PASSWORD
           valueFrom:
@@ -71,24 +56,24 @@ spec:
               key: MYSQL_PASSWORD
         envFrom:
         - configMapRef:
-            name: python-app-env-vars
+            name: expense-backend-env-vars
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: front-end-service
+  name: expense-backend
   labels:
-    app: python-app
-    tier: front-end
+    app: expense-backend
+    tier: backend
 spec:
   type: NodePort
   selector:
-    app: python-app
-    tier: front-end
+    app: expense-backend
+    tier: backend
   ports:
-  - name: frontend-port
+  - name: expense-backend
     protocol: "TCP"
-    port: 5000
-    targetPort: 5000
+    port: 8080
+    targetPort: 8080
     nodePort: 32123

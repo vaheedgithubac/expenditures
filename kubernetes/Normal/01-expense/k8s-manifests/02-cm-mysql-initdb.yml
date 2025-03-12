@@ -10,7 +10,7 @@ data:
       MAX_RETRIES=30  # Set max retries (30 seconds)
       RETRY_COUNT=0
 
-      while ! mysqladmin ping -h $MYSQL_HOST --silent
+      while ! mysqladmin ping -h $MYSQL_HOST -u root -p$MYSQL_ROOT_PASSWORD --silent
       do 
         sleep 1
         printf "-"
@@ -26,7 +26,7 @@ data:
       # mysql -h $MYSQL_HOST -u root -p${MYSQL_ROOT_PASSWORD} -e "SELECT 1"
       mysql -h $MYSQL_HOST -u root -p${MYSQL_ROOT_PASSWORD} < /mnt/init.sql
   
-  
+
   # Mysql init script
   init.sql: |
 
@@ -42,3 +42,7 @@ data:
       CREATE USER IF NOT EXISTS 'expense'@'%' IDENTIFIED BY 'ExpenseApp@1';
       GRANT ALL PRIVILEGES ON transactions.* TO 'expense'@'%';
       FLUSH PRIVILEGES;
+
+    
+    
+   

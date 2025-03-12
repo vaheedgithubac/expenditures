@@ -1,79 +1,44 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: expense-backend
-  labels:
-    app: expense-backend
-    tier: backend
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: expense-backend
-      tier: backend
-  template:
-    metadata:
-      labels:
-        app: expense-backend
-        tier: backend
-    spec:
-
-      volumes:
-      - name: mysql-init-db
-        configMap:
-          name: mysql-initdb-config
-
-      initContainers:
-      - name: connectivity-init-db
-        image: mysql:8.0
-        #command: ['/bin/bash', '-c', '/mnt/mysql_health_check.sh && mysql -h $MYSQL_HOST -u$MYSQL_ROOT_PASSWORD -p$MYSQL_ROOT_PASSWORD < /mnt/init.sql']
-        command: ["/bin/sh", "-c", "chmod +x /mnt/mysql_health_check.sh && /mnt/mysql_health_check.sh"]
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-secret
-              key: MYSQL_ROOT_PASSWORD
-        envFrom:
-        - configMapRef:
-            name: expense-backend-env-vars
-
-        volumeMounts:
-        - name: mysql-init-db
-          mountPath: /mnt
-      
-      containers:
-      - name: expense-backend-cont
-        image: << vaheeddockerhub/new-python-img-devops-techstack>>
-        ports:
-        - name: expense-backend
-          containerPort: 8080
-        env:
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-secret
-              key: MYSQL_PASSWORD
-        envFrom:
-        - configMapRef:
-            name: expense-backend-env-vars
-
----
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: expense-backend
-  labels:
-    app: expense-backend
-    tier: backend
-spec:
-  type: NodePort
-  selector:
-    app: expense-backend
-    tier: backend
-  ports:
-  - name: expense-backend
-    protocol: "TCP"
-    port: 8080
-    targetPort: 8080
-    nodePort: 32123
+  name: mysql-initdb-config
+data:
+  # Mysql health check
+  mysql_health_check.sh: |
+      
+      #!/usr/bin/env bash
+      MAX_RETRIES=30  # Set max retries (30 seconds)
+      RETRY_COUNT=0
+
+      while ! mysqladmin ping -h $MYSQL_HOST --silent
+      do 
+        sleep 1
+        printf "-"
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+
+        if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
+          echo " [ERROR] MySQL did not start within $MAX_RETRIES seconds. Exiting."
+          exit 1  # Exit with failure
+        fi
+      done
+
+      echo "*** [OK] Mysql is up and running ***"
+      # mysql -h $MYSQL_HOST -u root -p${MYSQL_ROOT_PASSWORD} -e "SELECT 1"
+      mysql -h $MYSQL_HOST -u root -p${MYSQL_ROOT_PASSWORD} < /mnt/init.sql
+  
+  
+  # Mysql init script
+  init.sql: |
+
+      CREATE DATABASE IF NOT EXISTS transactions;
+      USE transactions;
+
+      CREATE TABLE IF NOT EXISTS transactions (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          amount INT,
+          description VARCHAR(255)
+      );
+
+      CREATE USER IF NOT EXISTS 'expense'@'%' IDENTIFIED BY 'ExpenseApp@1';
+      GRANT ALL PRIVILEGES ON transactions.* TO 'expense'@'%';
+      FLUSH PRIVILEGES;

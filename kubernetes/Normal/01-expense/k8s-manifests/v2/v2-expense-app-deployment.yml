@@ -34,10 +34,6 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: MYSQL_ROOT_PASSWORD
-        envFrom:
-        - configMapRef:
-            name: expense-backend-env-vars
-
         volumeMounts:
         - name: mysql-init-db
           mountPath: /mnt

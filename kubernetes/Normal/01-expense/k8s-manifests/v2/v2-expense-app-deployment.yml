@@ -26,14 +26,18 @@ spec:
       initContainers:
       - name: connectivity-init-db
         image: mysql:8.0
+        command: ["sh", "-c", "chmod +x /mnt/mysql_health_check.sh && /mnt/mysql_health_check.sh"]
         #command: ['/bin/bash', '-c', '/mnt/mysql_health_check.sh && mysql -h $MYSQL_HOST -u$MYSQL_ROOT_PASSWORD -p$MYSQL_ROOT_PASSWORD < /mnt/init.sql']
-        command: ["sh", "-c", 'echo -e "Checking for the availability of MySQL Server"; while ! mysqladmin ping -h $MYSQL_HOST -u root -p$MYSQL_ROOT_PASSWORD; do sleep 1; printf "-"; done; echo -e "  >> MySQL DB Server has started";']
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mysql-secret
               key: MYSQL_ROOT_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: expense-backend-env-vars
+
         volumeMounts:
         - name: mysql-init-db
           mountPath: /mnt
@@ -49,7 +53,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: mysql-secret
-              key: MYSQL_PASSWORD
+              key: DB_PWD
         envFrom:
         - configMapRef:
             name: expense-backend-env-vars

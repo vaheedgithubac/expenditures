@@ -19,7 +19,7 @@ spec:
     spec:
 
       volumes:
-      - name: nginx-reverse-proxy
+      - name: sbms-nginx-reverse-proxy
         configMap:
           name: sbms-nginx-reverse-proxy
 
@@ -35,7 +35,7 @@ spec:
         - name: sbms-frontend
           containerPort: 80
         volumeMounts:
-        - name: nginx-reverse-proxy
+        - name: sbms-nginx-reverse-proxy
           mountPath: /etc/nginx/conf.d/
 
 ---

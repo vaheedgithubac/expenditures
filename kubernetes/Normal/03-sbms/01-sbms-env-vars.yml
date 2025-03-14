@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sbms-env-vars
+data:
+  DB_HOST: "mysql-svc"  # Service name of Mysql pod's service
+  DB_USERNAME: "sbms"
+  DB_NAME: "sbms"

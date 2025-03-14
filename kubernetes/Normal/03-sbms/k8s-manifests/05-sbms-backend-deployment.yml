@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sbms
+  labels:
+    app: sbms
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sbms
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: sbms
+        tier: backend
+    spec:
+      initContainers:
+      - name: connectivity-init-db
+        image: mysql:8.0
+        command: ["sh", "-c", 'echo -e "Checking for the availability of MySQL Server"; while ! mysqladmin ping -h $MYSQL_HOST -u root -p$MYSQL_ROOT_PASSWORD; do sleep 1; printf "-"; done; echo -e "  >> MySQL DB Server has started";']
+        #command: ['/bin/bash', '-c', '/mnt/mysql_health_check.sh && mysql -h $MYSQL_HOST -u$MYSQL_ROOT_PASSWORD -p$MYSQL_ROOT_PASSWORD < /mnt/init.sql']
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        
+      containers:
+      - name: sbms-backend-cont
+        image: << vaheeddockerhub/new-python-img-devops-techstack >>
+        ports:
+        - name: sbms-backend
+          containerPort: 8080
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: sbms-env-vars
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sbms-backend
+  labels:
+    app: sbms-backend
+    tier: backend
+spec:
+  type: NodePort
+  selector:
+    app: sbms-backend
+    tier: backend
+  ports:
+  - name: sbms-backend
+    protocol: "TCP"
+    port: 8080
+    targetPort: 8080
+    nodePort: 32123

@@ -1,1 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sbms-frontend
+  labels:
+    app: sbms-frontend
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sbms-frontend
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: sbms-frontend
+        tier: frontend
+    spec:
 
+      volumes:
+      - name: nginx-reverse-proxy
+        configMap:
+          name: sbms-nginx-reverse-proxy
+
+      initContainers:
+      - name: check-nginx-ready
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Nginx Server deployment"; while ! nc -z localhost 8o; do sleep 1; printf "-"; done; echo -e "  >> Nginx Server has started";']
+
+      containers:
+      - name: sbms-frontend-cont
+        image: << vaheeddockerhub/new-python-img-devops-techstack >>
+        ports:
+        - name: sbms-frontend
+          containerPort: 80
+        volumeMounts:
+        - name: nginx-reverse-proxy
+          mountPath: /etc/nginx/conf.d/
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sbms-frontend
+  labels:
+    app: sbms-frontend
+    tier: frontend
+spec:
+  type: NodePort
+  selector:
+    app: sbms-frontend
+    tier: frontend
+  ports:
+  - name: sbms-frontend
+    protocol: "TCP"
+    port: 80
+    targetPort: 80
+    nodePort: 32126

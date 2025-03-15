@@ -52,16 +52,24 @@ spec:
           volumeMounts:
             - name: mysql-init-db
               mountPath: /docker-entrypoint-initdb.d
+              
           livenessProbe:
             exec:
-              command: ["mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD"]
-            initialDelaySeconds: 10
+              #command: ["mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD"]
+              command: ["/bin/sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
+            initialDelaySeconds: 30
             periodSeconds: 5
+            timeoutSeconds: 5         # Timeout if no response in 5 seconds
+            failureThreshold: 3
+            
           readinessProbe:
             exec:
-              command: ["mysql", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD", "-e", "SELECT 1"]
-            initialDelaySeconds: 10
+              #command: ["mysql", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD", "-e", "SELECT 1"]
+              command: ["/bin/sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
+            initialDelaySeconds: 30
             periodSeconds: 5
+            timeoutSeconds: 5         # Timeout if no response in 5 seconds
+            failureThreshold: 3
 
       
              

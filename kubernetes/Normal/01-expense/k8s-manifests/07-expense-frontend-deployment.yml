@@ -30,7 +30,7 @@ spec:
 
       containers:
       - name: expense-frontend-cont
-        image: << vaheeddockerhub/new-python-img-devops-techstack >>
+        image: nginx:1.27.4
         ports:
         - name: expense-frontend
           containerPort: 80

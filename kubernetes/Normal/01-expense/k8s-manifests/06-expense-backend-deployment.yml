@@ -32,7 +32,7 @@ spec:
             
       containers:
       - name: expense-backend-cont
-        image: << vaheeddockerhub/new-python-img-devops-techstack >>
+        image: backend-img
         ports:
         - name: expense-backend
           containerPort: 8080

@@ -30,7 +30,7 @@ spec:
 
       containers:
       - name: expense-frontend-cont
-        image: nginx:1.27.4
+        image: frontend-img
         ports:
         - name: expense-frontend
           containerPort: 80

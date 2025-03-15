@@ -71,6 +71,29 @@ spec:
             timeoutSeconds: 5         # Timeout if no response in 5 seconds
             failureThreshold: 3
 
+          startupProbe:
+            exec:
+              command: ["/bin/sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
+            failureThreshold: 30   # Allows up to 5 minutes for MySQL startup (30 * 10s)
+            periodSeconds: 10      # Check every 10 seconds
+            timeoutSeconds: 5      # Timeout if MySQL doesn’t respond in 5 seconds
+
+          livenessProbe:
+            exec:
+              command: ["/bin/sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
+            initialDelaySeconds: 0  # Not needed since startupProbe ensures MySQL is running
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          readinessProbe:
+            exec:
+              command: ["/bin/sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
+            initialDelaySeconds: 0  # Handled by startupProbe
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 2
+
       
              
 ---

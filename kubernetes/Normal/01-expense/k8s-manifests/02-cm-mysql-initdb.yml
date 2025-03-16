@@ -3,6 +3,12 @@ kind: ConfigMap
 metadata:
   name: mysql-initdb-config
 data:
+  mysql.cnf: |
+      [client]
+      user=root
+      password=${MYSQL_ROOT_PASSWORD}
+      # host=127.0.0.1
+
   # Mysql health check
   mysql_health_check.sh: |
       

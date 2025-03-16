@@ -22,21 +22,6 @@ spec:
         configMap:
           name: mysql-initdb-config
 
-      initContainers:
-        - name: init-mysql
-          image: mysql:8.0
-          command: ["sh", "-c", "chmod +x /mnt/mysql_health_check.sh && /mnt/mysql_health_check.sh"]
-          # command: ["sh", "-c", "mysql -h localhost -u root -p$MYSQL_ROOT_PASSWORD < /docker-entrypoint-initdb.d/init.sql"]
-          env:
-          - name: MYSQL_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: mysql-secret
-                key: MYSQL_ROOT_PASSWORD 
-          volumeMounts:
-            - name: mysql-init-db
-              mountPath: /docker-entrypoint-initdb.d
-
       containers:
         - name: mysql-cont
           image: mysql:8.0
@@ -51,36 +36,20 @@ spec:
                 key: MYSQL_ROOT_PASSWORD 
           volumeMounts:
             - name: mysql-init-db
-              mountPath: /docker-entrypoint-initdb.d
+              mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init.sql  # Mount only init.sql, not the entire ConfigMap
               
-          livenessProbe:
-            exec:
-              #command: ["mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD"]
-              command: ["/bin/sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
-            initialDelaySeconds: 30
-            periodSeconds: 5
-            timeoutSeconds: 5         # Timeout if no response in 5 seconds
-            failureThreshold: 3
-            
-          readinessProbe:
-            exec:
-              #command: ["mysql", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD", "-e", "SELECT 1"]
-              command: ["/bin/sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
-            initialDelaySeconds: 30
-            periodSeconds: 5
-            timeoutSeconds: 5         # Timeout if no response in 5 seconds
-            failureThreshold: 3
-
           startupProbe:
             exec:
-              command: ["/bin/sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
-            failureThreshold: 30   # Allows up to 5 minutes for MySQL startup (30 * 10s)
+              #command: ["/bin/sh", "-c", "sleep 10; until mysqladmin ping -h 127.0.0.1 -uroot -p'$MYSQL_ROOT_PASSWORD' --silent; do echo waiting for mysql; sleep 2; done"]
+              command: ['sh', '-c', 'sleep 10; until exit | mysql -h localhost -u root -p"$MYSQL_ROOT_PASSWORD"; do echo waiting for mysql; sleep 2; done']
+            failureThreshold: 30   # Allows up to 5 minutes for MySQL startup (30 times * 10s)
             periodSeconds: 10      # Check every 10 seconds
-            timeoutSeconds: 5      # Timeout if MySQL doesn’t respond in 5 seconds
+            timeoutSeconds: 15     # Timeout if MySQL doesnt respond in 5 seconds
 
           livenessProbe:
             exec:
-              command: ["/bin/sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
+              command: ['sh', '-c', 'mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD']
             initialDelaySeconds: 0  # Not needed since startupProbe ensures MySQL is running
             periodSeconds: 10
             timeoutSeconds: 5
@@ -88,7 +57,7 @@ spec:
 
           readinessProbe:
             exec:
-              command: ["/bin/sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
+              command: ['sh', '-c', 'mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD']
             initialDelaySeconds: 0  # Handled by startupProbe
             periodSeconds: 5
             timeoutSeconds: 3
@@ -113,4 +82,4 @@ spec:
   - name: mysqldb-port
     protocol: "TCP"
     port: 3306
-    targetPort: 3306            
+    targetPort: 3306  

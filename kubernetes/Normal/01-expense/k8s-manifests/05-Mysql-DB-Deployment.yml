@@ -45,7 +45,7 @@ spec:
               command: ['sh', '-c', 'sleep 10; until exit | mysql -h localhost -u root -p"$MYSQL_ROOT_PASSWORD"; do echo waiting for mysql; sleep 2; done']
             failureThreshold: 30   # Allows up to 5 minutes for MySQL startup (30 times * 10s)
             periodSeconds: 10      # Check every 10 seconds
-            timeoutSeconds: 15     # Timeout if MySQL doesnt respond in 5 seconds
+            timeoutSeconds: 20     # Timeout if MySQL doesnt respond in 5 seconds
 
           livenessProbe:
             exec:

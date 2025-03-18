@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-config
+data:
+  # mysql.cnf: |
+  #     [client]
+  #     user=root
+  #     password=${MYSQL_ROOT_PASSWORD}
+  #      host=127.0.0.1
+
+  # Mysql health check
+  mysql_health_check.sh: |
+      
+      #!/usr/bin/env bash
+      MAX_RETRIES=30  # Set max retries (30 seconds)
+      RETRY_COUNT=0
+
+      while ! mysqladmin ping -h $MYSQL_HOST -u root -p$MYSQL_ROOT_PASSWORD --silent
+      do 
+        sleep 1
+        printf "-"
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+
+        if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
+          echo " [ERROR] MySQL did not start within $MAX_RETRIES seconds. Exiting."
+          exit 1  # Exit with failure
+        fi
+      done
+
+      echo "*** [OK] Mysql is up and running ***"
+      # mysql -h $MYSQL_HOST -u root -p${MYSQL_ROOT_PASSWORD} -e "SELECT 1"
+      mysql -h $MYSQL_HOST -u root -p${MYSQL_ROOT_PASSWORD} < /mnt/init.sql
+  
+
+  # Mysql init script
+  init.sql: |
+
+      SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+      SET time_zone = "+00:00";
+
+      CREATE DATABASE IF NOT EXISTS product;
+      USE product;
+      CREATE TABLE IF NOT EXISTS `product` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(45) NOT NULL,
+        `brand` varchar(45) NOT NULL,
+        `madein` varchar(45) NOT NULL,
+        `price` float NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+      CREATE USER IF NOT EXISTS 'product'@'%' IDENTIFIED BY 'product';
+      GRANT ALL PRIVILEGES ON product.* TO 'product'@'%';
+      ALTER USER 'product'@'%' IDENTIFIED BY 'product';
+      FLUSH PRIVILEGES;

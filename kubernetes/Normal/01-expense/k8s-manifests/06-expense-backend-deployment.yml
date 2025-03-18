@@ -37,7 +37,7 @@ spec:
             
       containers:
       - name: expense-backend-cont
-        image: backend-img
+        image: vaheeddockerhub/backend-img
         ports:
         - name: expense-backend
           containerPort: 8080

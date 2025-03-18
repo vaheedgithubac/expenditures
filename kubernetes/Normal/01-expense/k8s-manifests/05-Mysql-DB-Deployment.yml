@@ -37,12 +37,13 @@ spec:
           volumeMounts:
             - name: mysql-init-db
               mountPath: /docker-entrypoint-initdb.d/init.sql
-              subPath: init.sql  # Mount only init.sql, not the entire ConfigMap
+              subPath: init.sql              # Mount only init.sql, not the entire ConfigMap
               
           startupProbe:
             exec:
               #command: ["/bin/sh", "-c", "sleep 10; until mysqladmin ping -h 127.0.0.1 -uroot -p'$MYSQL_ROOT_PASSWORD' --silent; do echo waiting for mysql; sleep 2; done"]
-              command: ['sh', '-c', 'sleep 10; until exit | mysql -h localhost -u root -p"$MYSQL_ROOT_PASSWORD"; do echo waiting for mysql; sleep 2; done']
+              #command: ['sh', '-c', 'sleep 10; until exit | mysql -h localhost -u root -p"$MYSQL_ROOT_PASSWORD"; do echo waiting for mysql; sleep 2; done']
+              command: ['/bin/sh', '-c', 'until mysql -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD" -e "select 1" ; do echo "waiting for mysql"; sleep 2; done']
             failureThreshold: 30   # Allows up to 5 minutes for MySQL startup (30 times * 10s)
             periodSeconds: 10      # Check every 10 seconds
             timeoutSeconds: 15     # Timeout if MySQL doesnt respond in 15 seconds

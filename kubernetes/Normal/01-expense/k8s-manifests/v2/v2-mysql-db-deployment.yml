@@ -71,7 +71,7 @@ spec:
               command: ['sh', '-c', 'until mysql --defaults-extra-file=/var/tmp/mysql.cnf -h localhost -e "SELECT 1;" > /dev/null 2>&1;do echo waiting for mysql; sleep 2; done']
             failureThreshold: 30   # Allows up to 5 minutes for MySQL startup (30 times * 10s)
             periodSeconds: 10      # Check every 10 seconds
-            timeoutSeconds: 15     # Timeout if MySQL doesnt respond in 15 seconds
+            timeoutSeconds: 30     # Timeout if MySQL doesnt respond in 30 seconds
 
           livenessProbe:
             exec:

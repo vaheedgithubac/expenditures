@@ -42,11 +42,11 @@ spec:
         - name: expense-backend
           containerPort: 8080
         env:
-        - name: MYSQL_PASSWORD
+        - name: DB_PWD
           valueFrom:
             secretKeyRef:
               name: mysql-secret
-              key: MYSQL_PASSWORD
+              key: DB_PWD
         envFrom:
         - configMapRef:
             name: expense-backend-env-vars

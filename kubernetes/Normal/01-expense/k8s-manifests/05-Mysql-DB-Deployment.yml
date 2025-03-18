@@ -47,7 +47,7 @@ spec:
             initialDelaySeconds: 40
             failureThreshold: 30   # Allows up to 5 minutes for MySQL startup (30 times * 10s)
             periodSeconds: 10      # Check every 10 seconds
-            timeoutSeconds: 60     # Timeout if MySQL doesnt respond in 60 seconds
+            timeoutSeconds: 30     # Timeout if MySQL doesnt respond in 60 seconds
 
           livenessProbe:
             exec:

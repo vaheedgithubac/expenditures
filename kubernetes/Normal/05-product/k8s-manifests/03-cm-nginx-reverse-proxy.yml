@@ -15,7 +15,7 @@ data:
 
             location / {
 
-            proxy_pass         http://app-product:8080/;   # product service name
+            proxy_pass         http://product-backend:8080/;   # product service name
             proxy_redirect     off;
             proxy_set_header   Host $host;
             proxy_set_header   X-Real-IP $remote_addr;

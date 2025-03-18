@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: expense-nginx-reverse-proxy
 data:
-  sbms.conf: |
+  expense.conf: |
         server {
             
             listen 80 default_server;  # Treated as default server for every request

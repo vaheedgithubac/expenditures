@@ -50,7 +50,7 @@ spec:
 
           livenessProbe:
             exec:
-              command: ['sh', '-c', 'mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD']
+              command: ['sh', '-c', 'mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"']
             initialDelaySeconds: 0  # Not needed since startupProbe ensures MySQL is running
             periodSeconds: 10
             timeoutSeconds: 5
@@ -58,7 +58,7 @@ spec:
 
           readinessProbe:
             exec:
-              command: ['sh', '-c', 'mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD']
+              command: ['sh', '-c', 'mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"']
             initialDelaySeconds: 0  # Handled by startupProbe
             periodSeconds: 5
             timeoutSeconds: 5
@@ -74,8 +74,8 @@ metadata:
   labels:
     db: mysql
 spec:
-  type: ClusterIP
-  #clusterIP: None # This means we are going to use Pod IP 
+  #type: ClusterIP
+  clusterIP: None # This means we are going to use Pod IP directly
   selector:
     db: mysql
     tier: db

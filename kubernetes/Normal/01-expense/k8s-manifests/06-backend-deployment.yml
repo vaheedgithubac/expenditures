@@ -55,16 +55,16 @@ spec:
           tcpSocket:
             port: 8080
           initialDelaySeconds: 15
-          periodSeconds: 5
-          timeoutSeconds: 3
+          periodSeconds: 10
+          timeoutSeconds: 10
           failureThreshold: 6
         
         readinessProbe:
             tcpSocket:
               port: 8080
-            initialDelaySeconds: 5
+            initialDelaySeconds: 10
             periodSeconds: 10
-            timeoutSeconds: 3
+            timeoutSeconds: 10
             failureThreshold: 3
          
         livenessProbe:
@@ -73,7 +73,7 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 10
-            timeoutSeconds: 3
+            timeoutSeconds: 10
             failureThreshold: 3
 ---
 apiVersion: v1

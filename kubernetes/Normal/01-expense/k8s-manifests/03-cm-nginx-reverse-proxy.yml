@@ -11,6 +11,13 @@ data:
 
             proxy_http_version 1.1;
 
+            location / {
+                root   /usr/share/nginx/html;
+                index  index.html index.htm;
+                ssi    on;
+            }
+
+            # Proxy Pass to our Application
             location /api/ {
 
                 proxy_pass         http://expense-backend:8080/;    # backend service name:port

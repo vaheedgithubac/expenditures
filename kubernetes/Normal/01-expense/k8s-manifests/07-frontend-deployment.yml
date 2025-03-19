@@ -58,7 +58,7 @@ spec:
           httpGet:
             path: /nginx-health
             port: 80
-          initialDelaySeconds: 10
+          initialDelaySeconds: 15
           periodSeconds: 10
           timeoutSeconds: 10
           failureThreshold: 3

@@ -26,7 +26,7 @@ spec:
       initContainers:
       - name: check-nginx-ready
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of Nginx Server deployment"; while ! nc -z localhost 8o; do sleep 1; printf "-"; done; echo -e "  >> Nginx Server has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Nginx Server deployment"; while ! nc -z localhost 80; do sleep 1; printf "-"; done; echo -e "  >> Nginx Server has started";']
 
       containers:
       - name: sbms-frontend-cont
